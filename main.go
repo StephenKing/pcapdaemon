@@ -13,7 +13,6 @@ import (
 
 	// setup aws config
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 )
 
 var cshostPtr *string
@@ -67,14 +66,8 @@ func validateOptions(c tomlConfig) {
 
 	// S3 configs
 	if c.Aws.Upload {
-		if c.Aws.AccessID == nil || c.Aws.AccessKey == nil {
-			log.Fatal("You must supply an accesskey and accessid to use S3 ")
-		}
-		if c.Aws.Endpoint == nil || c.Aws.Bucket == nil {
-			log.Fatal("You must supply an endpoint and a default bucket to use S3 ")
-		}
-		if c.Aws.Region == nil {
-			log.Fatal("You must supply a Region to use S3 ")
+		if c.Aws.Bucket == nil {
+			log.Fatal("You must supply a default bucket to use S3 ")
 		}
 
 		if c.Aws.ACL == nil {
@@ -96,16 +89,12 @@ func validateOptions(c tomlConfig) {
 			Region:           c.Aws.Region,
 			Endpoint:         c.Aws.Endpoint,
 			S3ForcePathStyle: dest, // <-- without these lines. All will fail! fork you aws!
-			Credentials:      credentials.NewStaticCredentials(*c.Aws.AccessID, *c.Aws.AccessKey, ""),
 			LogLevel:         ll,
 		}
 	}
 
 	// SQS Configs
 	if c.AwsSqs.Listen {
-		if c.AwsSqs.AccessID == nil || c.AwsSqs.AccessKey == nil {
-			log.Fatal("You must supply an accesskey and accessid to use SQS ")
-		}
 		if c.AwsSqs.Region == nil {
 			log.Fatal("You must supply a Region to use SQS ")
 		}

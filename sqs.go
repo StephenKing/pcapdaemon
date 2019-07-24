@@ -8,7 +8,6 @@ import (
 
 	// amazon stuff
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 )
@@ -17,7 +16,6 @@ func subToSqs() {
 
 	sqsconfig := &aws.Config{
 		Region:      config.AwsSqs.Region,
-		Credentials: credentials.NewStaticCredentials(*config.AwsSqs.AccessID, *config.AwsSqs.AccessKey, ""),
 	}
 
 	// Do connect and session code here
