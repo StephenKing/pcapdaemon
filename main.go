@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"log/syslog"
 	"os"
 	"time"
 
@@ -201,16 +200,6 @@ func validateOptions(c tomlConfig) {
 			}
 		}
 	}
-
-	// validate syslog
-	if c.Log.Priority == 0 {
-		c.Log.Priority = 85
-	}
-
-	if c.Log.Tag == "" {
-		c.Log.Tag = "pcapdaemon"
-	}
-
 }
 
 func main() {
@@ -244,12 +233,6 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-	}
-
-	log.SetFlags(0)
-	logwriter, e := syslog.New(syslog.Priority(config.Log.Priority), config.Log.Tag)
-	if e == nil {
-		log.SetOutput(logwriter)
 	}
 
 	// create interface map

@@ -42,7 +42,6 @@ type tomlConfig struct {
 	R      Redis            `toml:"redis"`
 	K      Kafka            `toml:"kafka"`
 	Ifmap  InterfaceAliases `toml:"interface"`
-	Log    Syslog           `toml:"syslog"`
 }
 
 // General defines the top level "general" section of the the pcapdaemon config file
@@ -92,12 +91,6 @@ type Kafka struct {
 	Server []string `toml:"server"`
 	Topic  string   `toml:"topic"`
 	Listen bool     `toml:"listen"`
-}
-
-// Syslog defines the syslog section of the config file options
-type Syslog struct {
-	Priority int    `toml:"priority"`
-	Tag      string `toml:"tag"`
 }
 
 // S3 defines the options necessary to use an S3 bucket as a destination for the pcap file
