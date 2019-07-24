@@ -36,6 +36,11 @@ func (writer logWriter) Write(bytes []byte) (int, error) {
 	return fmt.Print(string(bytes))
 }
 
+func exitErrorf(msg string, args ...interface{}) {
+	fmt.Fprintf(os.Stderr, msg+"\n", args...)
+	os.Exit(1)
+}
+
 func updateInterfaceMap() {
 
 	x, ierr := pcap.FindAllDevs()

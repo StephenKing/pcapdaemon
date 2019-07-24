@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"log"
 	//	"time"
 	"encoding/json"
@@ -31,10 +32,12 @@ func subToSqs() {
 
 	svc := sqs.New(sess)
 
+	queueUrl := *config.AwsSqs.URL
+
 	for {
 		// Do long poll here
 		params := &sqs.ReceiveMessageInput{
-			QueueUrl: aws.String(*config.AwsSqs.URL),
+			QueueUrl: aws.String(queueUrl),
 			AttributeNames: []*string{
 				aws.String("ApproximateNumberOfMessages"),           // Required
 				aws.String("ApproximateNumberOfMessagesNotVisible"), // Required
@@ -52,12 +55,15 @@ func subToSqs() {
 		resp, err := svc.ReceiveMessage(params)
 
 		if err != nil {
-			// Print the error, cast err to awserr.Error to get the Code and
-			// Message from an error.
 			fmt.Println("SQS Error: ", err.Error())
 			log.Println("SQS Error: ", err.Error())
 			fmt.Println("SQS Response: ", resp)
 			log.Println("SQS Response: ", resp)
+
+			if aerr, ok := err.(awserr.Error); ok && aerr.Code() == sqs.ErrCodeQueueDoesNotExist {
+				exitErrorf("Unable to find queue %q.", queueUrl)
+			}
+			exitErrorf("Unable to get queue %q, %v.", queueUrl, err)
 		} else {
 
 			var msg Capmsg
